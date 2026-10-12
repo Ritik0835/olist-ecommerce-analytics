@@ -110,10 +110,71 @@ WHERE order_delivered_carrier_date IS NOT NULL
   AND order_delivered_carrier_date < order_purchase_timestamp;
 
 
--- 11: Carrier delivery date before purchase date
+-- 11: Order-status distribution
 SELECT
-    COUNT(*) AS invalid_carrier_dates
+    order_status,
+    COUNT(*) AS order_count
 FROM orders
-WHERE order_delivered_carrier_date IS NOT NULL
-  AND order_purchase_timestamp IS NOT NULL
-  AND order_delivered_carrier_date < order_purchase_timestamp;
+GROUP BY order_status
+ORDER BY order_count DESC;
+
+
+-- 12:Duplicate review_id
+SELECT
+    review_id,
+    COUNT(*) AS occurrence_count
+FROM order_reviews
+GROUP BY review_id
+HAVING COUNT(*) > 1;
+
+
+-- 13: Negative price
+SELECT COUNT(*) AS negative_freight_count
+FROM order_items
+WHERE freight_value < 0;
+
+
+-- 14: Negative freight
+SELECT COUNT(*) AS negative_freight_count
+FROM order_items
+WHERE freight_value < 0;
+
+
+-- 15: Products with NULL category
+SELECT COUNT(*) AS products_without_category
+FROM products
+WHERE product_category_name IS NULL;
+
+
+-- 16: Missing English category translation
+SELECT COUNT(*) AS products_without_translation
+FROM products p
+LEFT JOIN category_translation ct
+    ON p.product_category_name = ct.product_category_name
+WHERE p.product_category_name IS NOT NULL
+  AND ct.product_category_name IS NULL;
+
+
+--17: Purchase date range
+SELECT
+    MIN(order_purchase_timestamp) AS earliest_purchase,
+    MAX(order_purchase_timestamp) AS latest_purchase
+FROM orders;
+
+
+-- 18: Month-wise order count
+ SELECT
+    DATE_TRUNC('month', order_purchase_timestamp) AS order_month,
+    COUNT(*) AS order_count
+FROM orders
+WHERE order_purchase_timestamp IS NOT NULL
+GROUP BY 1
+ORDER BY 1;
+
+
+-- 19: Orders without items
+SELECT COUNT(*) AS orders_without_items
+FROM orders o
+LEFT JOIN order_items oi
+    ON o.order_id = oi.order_id
+WHERE oi.order_id IS NULL;
