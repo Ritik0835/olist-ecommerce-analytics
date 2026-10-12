@@ -178,3 +178,44 @@ FROM orders o
 LEFT JOIN order_items oi
     ON o.order_id = oi.order_id
 WHERE oi.order_id IS NULL;
+
+
+
+
+
+-- ASSUMPTIONS / DECISIONS
+
+-- 1. Order status:
+-- Delivered orders will be used for revenue and delivery analysis.
+-- Non-delivered statuses will not be treated as completed sales.
+
+-- 2. Missing delivery dates:
+-- NULL delivery dates are retained in the raw data.
+-- Delivery-time analysis will require a valid delivery date.
+
+-- 3. Carrier-date anomalies:
+-- 166 orders have carrier dates earlier than purchase timestamps.
+-- Raw data will not be modified. These records will be flagged/handled
+-- appropriately when delivery timing is analyzed.
+
+-- 4. Missing product categories:
+-- 610 products have NULL category names.
+-- NULL categories are retained; the analytical product dimension
+-- will handle missing categories explicitly.
+
+-- 5. Missing category translations:
+-- 13 products have categories without an English translation.
+-- Original category values are retained and English names are used
+-- where a translation exists.
+
+-- 6. Orders without items:
+-- 775 orders have no corresponding order_items records.
+-- These orders are retained in the raw data. Item-level analysis
+-- will naturally include only orders with items.
+
+-- 7. Sparse date periods:
+-- The dataset spans September 2016 to October 2018.
+-- Early and endpoint periods are treated cautiously because
+-- the dataset is sparse/incomplete in those periods.
+
+
