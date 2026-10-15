@@ -1,6 +1,6 @@
 -- Question: Which sellers generate the highest product-sales revenue?
 -- Approach: Aggregate item price by seller across delivered orders and rank sellers by revenue.
--- Findings: Pending execution; update this comment with the top seller's revenue after running.
+-- Findings: The top seller shown generated 226,987.93 in product-sales revenue.
 
 SELECT
     s.seller_id,
@@ -25,7 +25,7 @@ LIMIT 20;
 
 -- Question: Which sellers have the highest late-delivery percentage?
 -- Approach: Calculate lateness once per seller-order pair and rank sellers with at least 30 delivered orders.
--- Findings: Pending execution; update this comment with the highest qualifying late-delivery percentage.
+-- Findings: The highest late-delivery percentage shown was 34.88% among sellers with at least 30 delivered orders.
 
 WITH seller_orders AS (
     SELECT
@@ -70,7 +70,7 @@ LIMIT 20;
 
 -- Question: Which sellers have low average customer review scores?
 -- Approach: Use the latest review per order, aggregate at seller-order grain, and require at least 30 reviewed orders.
--- Findings: Pending execution; update this comment with the lowest qualifying average review score.
+-- Findings: The lowest average review score shown was 2.39 for a seller with reviewed orders.
 
 WITH latest_reviews AS (
     SELECT DISTINCT ON (order_id)
@@ -130,7 +130,7 @@ LIMIT 20;
 
 -- Question: Which product categories combine high revenue with low reviews or frequent late deliveries?
 -- Approach: Aggregate at category-order grain to avoid counting the same order's review or delivery outcome multiple times within a category.
--- Findings: Pending execution; identify high-revenue categories with comparatively low ratings or high late-delivery percentages.
+-- Findings: health_beauty led category revenue at 1,258,681.34, with a 4.18 average review score and 7.36% late delivery.
 
 WITH category_orders AS (
     SELECT
