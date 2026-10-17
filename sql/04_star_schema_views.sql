@@ -54,12 +54,16 @@ FROM generate_series(
 
 
 -- 5. FACT ORDER ITEMS
+-- Assumption: only delivered orders are included (canceled, unavailable,
+-- shipped etc. are not completed sales).
+-- is_late: 1 = delivered after estimated date, 0 = on time/early,
+-- NULL = delivery or estimate date missing (8 delivered orders).
 
-CREATE OR REPLACE VIEW fact_order_items AS
+DROP VIEW IF EXISTS fact_order_items;
+
+CREATE VIEW fact_order_items AS
 WITH latest_reviews AS (
-    SELECT
-        order_id,
-        review_score
+    SELECT order_id, review_score
     FROM (
         SELECT
             order_id,
@@ -101,8 +105,11 @@ SELECT
     CASE
         WHEN o.order_delivered_customer_date IS NOT NULL
          AND o.order_estimated_delivery_date IS NOT NULL
-        THEN o.order_delivered_customer_date::date
-             > o.order_estimated_delivery_date::date
+        THEN CASE
+                 WHEN o.order_delivered_customer_date::date
+                      > o.order_estimated_delivery_date::date
+                 THEN 1 ELSE 0
+             END
         ELSE NULL
     END AS is_late,
 
@@ -114,5 +121,5 @@ JOIN orders o
 JOIN customers c
     ON o.customer_id = c.customer_id
 LEFT JOIN latest_reviews r
-    ON oi.order_id = r.order_id;
-
+    ON oi.order_id = r.order_id
+WHERE o.order_status = 'delivered';
