@@ -3,7 +3,7 @@
 -- Q1. LATE VS ON-TIME ORDERS
 -- Question: How do late deliveries relate to order counts and review scores?
 -- Approach: Classify delivered orders and use the latest review per order.
--- Findings: 6,534 orders (6.77%) were late; 89,936 (93.23%) were on time or early.
+-- Findings: 6,534 orders (6.77%) were late with a 2.27 average review score; 89,936 (93.23%) were on time or early with a 4.29 average review score.
 
 WITH latest_review AS (
     SELECT DISTINCT ON (order_id)
@@ -66,7 +66,7 @@ ORDER BY avg_delivery_days DESC;
 -- Q3. DELIVERY DELAY BUCKETS VS REVIEW SCORE
 -- Question: How do different delivery delays relate to customer review scores?
 -- Approach: Bucket delivery delays and compare counts, percentages, and latest review scores.
--- Findings: Record each bucket's order count, percentage, and average review score after execution.
+-- Findings: On-time or early orders were 89,936 (93.23%) with a 4.29 average review. Scores declined as delays increased: 1–3 days late, 1,870 orders (1.94%), score 3.29; 4–7 days late, 1,802 (1.87%), score 2.10; 8+ days late, 2,862 (2.97%), score 1.69.
 
 WITH latest_review AS (
     SELECT DISTINCT ON (order_id)

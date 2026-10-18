@@ -1,6 +1,6 @@
 -- Question: Which sellers generate the highest product-sales revenue?
 -- Approach: Aggregate item price by seller across delivered orders and rank sellers by revenue.
--- Findings: The top seller shown generated 226,987.93 in product-sales revenue.
+-- Findings: The highest-revenue seller in the output generated R$226,987.93 across 1,124 delivered orders and 1,148 items sold.
 
 SELECT
     s.seller_id,
@@ -25,7 +25,7 @@ LIMIT 20;
 
 -- Question: Which sellers have the highest late-delivery percentage?
 -- Approach: Calculate lateness once per seller-order pair and rank sellers with at least 30 delivered orders.
--- Findings: The highest late-delivery percentage shown was 34.88% among sellers with at least 30 delivered orders.
+-- Findings: The highest late-delivery percentage shown was 34.88% (15 late orders out of 43 delivered orders). Because this seller has a relatively small order count, interpret the rate cautiously.
 
 WITH seller_orders AS (
     SELECT
@@ -70,7 +70,7 @@ LIMIT 20;
 
 -- Question: Which sellers have low average customer review scores?
 -- Approach: Use the latest review per order, aggregate at seller-order grain, and require at least 30 reviewed orders.
--- Findings: The lowest average review score shown was 2.39 for a seller with reviewed orders.
+-- Findings: The lowest average review score shown was 2.39 across 107 reviewed orders; that seller had a 21.50% late-delivery rate.
 
 WITH latest_reviews AS (
     SELECT DISTINCT ON (order_id)
@@ -130,7 +130,7 @@ LIMIT 20;
 
 -- Question: Which product categories combine high revenue with low reviews or frequent late deliveries?
 -- Approach: Aggregate at category-order grain to avoid counting the same order's review or delivery outcome multiple times within a category.
--- Findings: health_beauty led category revenue at 1,258,681.34, with a 4.18 average review score and 7.36% late delivery.
+-- Findings: Health & Beauty led category revenue at R$1,233,131.72 with a 4.23 average review score and 7.51% late delivery. Audio had the highest late-delivery rate in the output at 11.78% (348 orders), while Home Comfort was at 9.44%.
 
 WITH category_orders AS (
     SELECT
@@ -138,12 +138,7 @@ WITH category_orders AS (
         f.order_id,
         SUM(f.price) AS order_category_revenue,
         MAX(f.review_score) AS review_score,
-        MAX(
-            CASE
-                WHEN f.is_late THEN 1
-                ELSE 0
-            END
-        ) AS is_late
+        MAX(COALESCE(f.is_late, 0)) AS is_late
     FROM fact_order_items f
     JOIN dim_products dp
         ON dp.product_id = f.product_id
