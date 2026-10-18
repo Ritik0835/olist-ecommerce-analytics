@@ -25,16 +25,15 @@ LIMIT 20;
 
 -- Question: Which sellers have the highest late-delivery percentage?
 -- Approach: Calculate lateness once per seller-order pair and rank sellers with at least 30 delivered orders.
--- Findings: The highest late-delivery percentage shown was 34.88% (15 late orders out of 43 delivered orders). Because this seller has a relatively small order count, interpret the rate cautiously.
-
+-- Findings: The highest late-delivery percentage shown was 32.56% (14 late orders out of 43 delivered orders). Because this seller has a relatively small order count, interpret the rate cautiously.
 WITH seller_orders AS (
     SELECT
         oi.seller_id,
         o.order_id,
         MAX(
             CASE
-                WHEN o.order_delivered_customer_date >
-                     o.order_estimated_delivery_date THEN 1
+                WHEN o.order_delivered_customer_date::date >
+                     o.order_estimated_delivery_date::date THEN 1
                 ELSE 0
             END
         ) AS is_late
@@ -70,8 +69,7 @@ LIMIT 20;
 
 -- Question: Which sellers have low average customer review scores?
 -- Approach: Use the latest review per order, aggregate at seller-order grain, and require at least 30 reviewed orders.
--- Findings: The lowest average review score shown was 2.39 across 107 reviewed orders; that seller had a 21.50% late-delivery rate.
-
+-- Findings: The lowest average review score shown was 2.39 across 107 reviewed orders; that seller had a 16.82% late-delivery rate.
 WITH latest_reviews AS (
     SELECT DISTINCT ON (order_id)
         order_id,
@@ -90,8 +88,8 @@ seller_orders AS (
         MAX(lr.review_score) AS review_score,
         MAX(
             CASE
-                WHEN o.order_delivered_customer_date >
-                     o.order_estimated_delivery_date THEN 1
+                WHEN o.order_delivered_customer_date::date >
+                     o.order_estimated_delivery_date::date THEN 1
                 ELSE 0
             END
         ) AS is_late
