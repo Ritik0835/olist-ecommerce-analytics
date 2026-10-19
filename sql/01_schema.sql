@@ -54,7 +54,7 @@ CREATE TABLE orders (
 );
 
 CREATE TABLE order_reviews (
-    review_id VARCHAR(32) PRIMARY KEY,
+    review_id VARCHAR(32) NOT NULL,
     order_id VARCHAR(32) NOT NULL,
     review_score INTEGER,
     review_comment_title TEXT,
@@ -62,11 +62,13 @@ CREATE TABLE order_reviews (
     review_creation_date TIMESTAMP,
     review_answer_timestamp TIMESTAMP,
 
+    -- review_id alone is not unique in the raw data (same id on different orders)
+    PRIMARY KEY (review_id, order_id),
+
     CONSTRAINT fk_order_reviews_order
         FOREIGN KEY (order_id)
         REFERENCES orders(order_id)
 );
-
 
 CREATE TABLE geolocation (
     geolocation_zip_code_prefix INTEGER,

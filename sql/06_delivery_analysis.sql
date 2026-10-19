@@ -66,7 +66,7 @@ ORDER BY avg_delivery_days DESC;
 -- Q3. DELIVERY DELAY BUCKETS VS REVIEW SCORE
 -- Question: How do different delivery delays relate to customer review scores?
 -- Approach: Bucket delivery delays and compare counts, percentages, and latest review scores.
--- Findings: On-time or early orders were 89,936 (93.23%) with a 4.29 average review. Scores declined as delays increased: 1–3 days late, 1,870 orders (1.94%), score 3.29; 4–7 days late, 1,802 (1.87%), score 2.10; 8+ days late, 2,862 (2.97%), score 1.69.
+-- Findings: On-time or early orders were 89,936 (93.23%) with a 4.29 average review. Scores declined as delays increased: 1–3 days late, 1,870 orders (1.94%), score 3.29; 4–7 days late, 1,802 (1.87%), score 2.10; 8+ days late, 2,862 (2.97%), score 1.70.
 
 WITH latest_review AS (
     SELECT DISTINCT ON (order_id)

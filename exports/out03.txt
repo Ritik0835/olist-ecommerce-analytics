@@ -1,0 +1,164 @@
+      table_name      | row_count 
+----------------------+-----------
+ category_translation |        71
+ sellers              |      3095
+ products             |     32951
+ order_payments       |    103886
+ customers            |     99441
+ orders               |     99441
+ order_items          |    112650
+ order_reviews        |     99224
+ geolocation          |   1000163
+(9 rows)
+
+ total_orders | order_id_filled | customer_id_filled | order_status_filled | purchase_date_filled | delivered_date_filled 
+--------------+-----------------+--------------------+---------------------+----------------------+-----------------------
+        99441 |           99441 |              99441 |               99441 |                99441 |                 96476
+(1 row)
+
+ order_status | orders_without_delivery_date 
+--------------+------------------------------
+ shipped      |                         1107
+ canceled     |                          619
+ unavailable  |                          609
+ invoiced     |                          314
+ processing   |                          301
+ delivered    |                            8
+ created      |                            5
+ approved     |                            2
+(8 rows)
+
+ order_id | occurrence_count 
+----------+------------------
+(0 rows)
+
+ orphan_order_items 
+--------------------
+                  0
+(1 row)
+
+ orphan_product_references 
+---------------------------
+                         0
+(1 row)
+
+ orphan_seller_references 
+--------------------------
+                        0
+(1 row)
+
+ invalid_delivery_dates 
+------------------------
+                      0
+(1 row)
+
+ invalid_approval_dates 
+------------------------
+                      0
+(1 row)
+
+ invalid_carrier_dates 
+-----------------------
+                   166
+(1 row)
+
+ order_status | order_count 
+--------------+-------------
+ delivered    |       96478
+ shipped      |        1107
+ canceled     |         625
+ unavailable  |         609
+ invoiced     |         314
+ processing   |         301
+ created      |           5
+ approved     |           2
+(8 rows)
+
+            review_id             | occurrence_count 
+----------------------------------+------------------
+ 308316408775d1600dad81bd3184556d |                3
+ 38821b5c496b678cf91acc34892805ad |                3
+ 1fb4ddc969e6bea80e38deec00393a6f |                3
+ 2d6ac45f859465b5c185274a1c929637 |                3
+ 32415bbf6e341d5d517080a796f79b5c |                3
+ 3415c9f764e478409e8e0660ae816dd2 |                3
+ 08528f70f579f0c830189efc523d2182 |                3
+ 0c76e7a547a531e7bf9f0b99cba071c1 |                3
+ 2172867fd5b1a55f98fe4608e1547b4b |                3
+ 39b4603793c1c7f5f36d809b4a218664 |                3
+(10 rows)
+
+ orders_with_multiple_reviews 
+------------------------------
+                          547
+(1 row)
+
+ non_positive_price_items 
+--------------------------
+                        0
+(1 row)
+
+ negative_freight_items 
+------------------------
+                      0
+(1 row)
+
+ products_without_category 
+---------------------------
+                       610
+(1 row)
+
+ products_without_translation 
+------------------------------
+                           13
+(1 row)
+
+  earliest_purchase  |   latest_purchase   
+---------------------+---------------------
+ 2016-09-04 21:15:19 | 2018-10-17 17:30:18
+(1 row)
+
+ order_month | order_count 
+-------------+-------------
+ 2016-09-01  |           4
+ 2016-10-01  |         324
+ 2016-12-01  |           1
+ 2017-01-01  |         800
+ 2017-02-01  |        1780
+ 2017-03-01  |        2682
+ 2017-04-01  |        2404
+ 2017-05-01  |        3700
+ 2017-06-01  |        3245
+ 2017-07-01  |        4026
+ 2017-08-01  |        4331
+ 2017-09-01  |        4285
+ 2017-10-01  |        4631
+ 2017-11-01  |        7544
+ 2017-12-01  |        5673
+ 2018-01-01  |        7269
+ 2018-02-01  |        6728
+ 2018-03-01  |        7211
+ 2018-04-01  |        6939
+ 2018-05-01  |        6873
+ 2018-06-01  |        6167
+ 2018-07-01  |        6292
+ 2018-08-01  |        6512
+ 2018-09-01  |          16
+ 2018-10-01  |           4
+(25 rows)
+
+ orders_without_items 
+----------------------
+                  775
+(1 row)
+
+ delivered_without_delivery_date 
+---------------------------------
+                               8
+(1 row)
+
+ orders_with_multiple_payments 
+-------------------------------
+                          2961
+(1 row)
+

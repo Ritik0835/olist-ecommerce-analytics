@@ -25,15 +25,16 @@ LIMIT 20;
 
 -- Question: Which sellers have the highest late-delivery percentage?
 -- Approach: Calculate lateness once per seller-order pair and rank sellers with at least 30 delivered orders.
--- Findings: The highest late-delivery percentage shown was 32.56% (14 late orders out of 43 delivered orders). Because this seller has a relatively small order count, interpret the rate cautiously.
+-- Findings: Among sellers with 30+ delivered orders, the highest late-delivery rate was 32.56% (14 late of 43 orders, Ribeirao Preto, SP), then 31.58% (12 of 38) and 30.14% (22 of 73). Order counts are small, so interpret cautiously.
+
 WITH seller_orders AS (
     SELECT
         oi.seller_id,
         o.order_id,
         MAX(
             CASE
-                WHEN o.order_delivered_customer_date::date >
-                     o.order_estimated_delivery_date::date THEN 1
+                WHEN o.order_delivered_customer_date >
+                     o.order_estimated_delivery_date THEN 1
                 ELSE 0
             END
         ) AS is_late
@@ -69,7 +70,8 @@ LIMIT 20;
 
 -- Question: Which sellers have low average customer review scores?
 -- Approach: Use the latest review per order, aggregate at seller-order grain, and require at least 30 reviewed orders.
--- Findings: The lowest average review score shown was 2.39 across 107 reviewed orders; that seller had a 16.82% late-delivery rate.
+-- Findings: The lowest average review score was 2.39 across 107 reviewed orders (Santana de Parnaiba, SP) with a 16.82% late-delivery rate. Campinas followed at 2.79 (184 reviewed orders, 10.87% late).
+
 WITH latest_reviews AS (
     SELECT DISTINCT ON (order_id)
         order_id,
@@ -88,8 +90,8 @@ seller_orders AS (
         MAX(lr.review_score) AS review_score,
         MAX(
             CASE
-                WHEN o.order_delivered_customer_date::date >
-                     o.order_estimated_delivery_date::date THEN 1
+                WHEN o.order_delivered_customer_date >
+                     o.order_estimated_delivery_date THEN 1
                 ELSE 0
             END
         ) AS is_late
@@ -128,7 +130,7 @@ LIMIT 20;
 
 -- Question: Which product categories combine high revenue with low reviews or frequent late deliveries?
 -- Approach: Aggregate at category-order grain to avoid counting the same order's review or delivery outcome multiple times within a category.
--- Findings: Health & Beauty led category revenue at R$1,233,131.72 with a 4.23 average review score and 7.51% late delivery. Audio had the highest late-delivery rate in the output at 11.78% (348 orders), while Home Comfort was at 9.44%.
+-- Findings: Health & Beauty led category revenue at R$1,233,131.72 with a 4.23 average review and 7.51% late delivery. Among categories with 30+ orders, furniture_mattress_and_upholstery had the highest late rate (13.51%, 37 orders) and audio 11.78% (348 orders). Office furniture combined R$268,154 revenue with the lowest review (3.64) among categories with 1,000+ orders.
 
 WITH category_orders AS (
     SELECT
