@@ -122,4 +122,6 @@ olist-ecommerce-analytics/
 
 ## Author
 
-Ritik | [GitHub](https://github.com/Ritik0835) | [LinkedIn](www.linkedin.com/in/ritik-sharma-zzz0835)
+<<<<<<< HEAD
+Ritik | [GitHub](https://github.com/Ritik0835) | [LinkedIn](https://www.linkedin.com/in/ritik-sharma-zzz0835)
+>>>>>>> 2a0164e (Fix: add final Power BI report, correct fact export, README link, insights)

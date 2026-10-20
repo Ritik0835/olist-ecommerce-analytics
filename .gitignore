@@ -1,4 +1,3 @@
 data/*.csv
-*.pbix
 *.pbit
 .env

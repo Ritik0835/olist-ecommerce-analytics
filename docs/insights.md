@@ -1,54 +1,60 @@
-# Olist E-Commerce Analytics — Business Insights
+# Insights and Recommendations
 
-## 1. Delivery Performance and Customer Satisfaction
+All numbers come from delivered orders only (96,478 orders, R$13,221,498.11 product revenue, freight excluded). Trend charts cover Jan 2017 to Aug 2018. Every figure below can be reproduced with the SQL files in `sql/` and appears in the Power BI dashboard.
 
-- On-time orders: average review score of 4.29.
-- Late orders: average review score of 2.27.
-- Orders 1–3 days late: average score of 3.29.
-- Orders 4–7 days late: average score of 2.10.
-- Orders 8 or more days late: average score of 1.70.
-- Late deliveries accounted for 6.77% of orders.
+## 1. Late delivery sharply lowers customer satisfaction
 
-**Recommendation:** Investigate delays, improve delivery estimates, and proactively contact affected customers.
+**Evidence**
+- 6,534 orders (6.77%) were delivered after the estimated date and averaged a 2.27 review score, versus 4.29 for the 89,936 on-time or early orders.
+- The score falls as the delay grows: 1-3 days late 3.29, 4-7 days late 2.10, 8+ days late 1.70.
+- Orders that are 8+ days late are only 2.97% of orders but carry the worst experience.
 
-## 2. Customer Retention
+**Recommendation**
+- Treat "more than 3 days late" as an escalation threshold: proactive customer messaging and a fast refund or reship path, because the score drops by more than a full point once an order is 4+ days late.
+- Review how the estimated delivery date is set. Padding estimates in slow regions would move late orders back to "on time" in the customer's eyes.
 
-- 97% of customers placed only one order.
-- Month-one retention was 0.48%.
-- Repeat customers contributed 5.51% of revenue.
+*Note: this is an association in observational data, not proof that lateness alone causes low scores.*
 
-**Recommendation:** Test post-purchase follow-ups, targeted offers, and loyalty campaigns.
+## 2. Almost no customers come back
 
-## 3. Revenue Concentration
+**Evidence**
+- 97.00% of customers (90,557 of 93,358) ordered once. Only 3.00% are repeat customers.
+- Month-1 retention across all cohorts is 0.48%.
+- Repeat customers generate just 5.51% of revenue, while one-time customers generate 94.49%.
+- Champions (114 customers) spend R$490.16 on average, about 3.6 times the R$137.96 of a one-time customer.
 
-- Three product categories accounted for 25.89% of revenue.
-- Sao Paulo represented approximately 38% of revenue.
+**Recommendation**
+- Retention is the biggest growth opportunity: a post-purchase email or coupon flow in the first 30 days, targeted at higher-value first-time buyers.
+- Use the Champions and Big Spenders (1,991 customers, R$305.44 average spend) profile to choose which first-time buyers to prioritise.
 
-**Recommendation:** Explore growth in other regions and categories.
+## 3. Revenue is concentrated in a few categories and one state
 
-## 4. Regional Delivery Performance
+**Evidence**
+- Health & Beauty (9.33%), Watches & Gifts (8.82%) and Bed Bath & Table (7.74%) together are 25.89% of revenue.
+- Sao Paulo alone is R$5,068,589.63, about 38% of revenue, from 40,500 orders. Sao Paulo, Rio de Janeiro and Minas Gerais together are about 63%.
+- Monthly revenue peaked at R$987,765.37 in Nov 2017 and was R$838,576.64 in Aug 2018.
 
-- Sao Paulo: average delivery time of 8.70 days.
-- Roraima: average delivery time of 29.34 days.
+**Recommendation**
+- Keep inventory and marketing focus on the leading categories, but test growth outside Sao Paulo, where marketplace dependence on one state is a risk.
 
-**Recommendation:** Investigate logistics constraints in slower regions.
+## 4. Delivery is much slower outside the south-east
 
-## 5. Seller Performance
+**Evidence**
+- Average delivery time is 8.70 days in Sao Paulo versus 29.34 in Roraima, 27.18 in Amapa and 26.36 in Amazonas. The overall average is 12.41 days.
+- Sao Paulo holds about 42% of delivered orders, so the national average hides the slow states.
 
-- Five sellers with at least 30 orders had late-delivery rates above 26%.
-- The highest reported rate was 32.56%, compared with 6.77% overall.
+**Recommendation**
+- For northern states, set longer and honest delivery promises, add a regional carrier or fulfilment partner, and onboard local sellers where volume justifies it.
 
-**Recommendation:** Monitor seller delay rates, order volumes, and review scores.
+## 5. A small group of sellers drives poor service
 
-## 6. Methodology Notes
+**Evidence**
+- Among sellers with 30+ delivered orders, five have late-delivery rates above 26% (the top is 32.56%, 14 of 43 orders), against 6.77% overall.
+- The lowest-rated seller with 30+ reviewed orders scores 2.39 across 107 orders. A Campinas seller scores 2.79 across 184 orders with only 10.87% late, so lateness is not the only cause of poor reviews.
+- Among large categories, Bed Bath & Table is the weakest-rated (4.00 on R$1.02M revenue, versus 4.16 overall), and Office Furniture scores 3.64 on R$268,154.
 
-- Revenue uses item prices for delivered orders, excluding freight.
-- Customer retention uses customer_unique_id.
-- Late delivery compares the delivered date with the estimated delivery date.
-- Observational associations do not establish causation.
+**Recommendation**
+- Introduce a seller scorecard (late %, review score, orders) with a support-or-penalty process for sellers below agreed thresholds.
+- Investigate quality in Bed Bath & Table and Office Furniture before scaling them further.
 
-## Tools Used
-
-- PostgreSQL and SQL
-- Power BI
-- Git and GitHub
+*Note: seller rates are based on small order counts (30 to 100), so treat them as a watch list, not a verdict.*
