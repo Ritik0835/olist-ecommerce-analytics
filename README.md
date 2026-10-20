@@ -122,4 +122,4 @@ olist-ecommerce-analytics/
 
 ## Author
 
-Ritik | [GitHub](https://github.com/Ritik0835) | [LinkedIn](https://www.linkedin.com/in/TUMHARA-ID)
+Ritik | [GitHub](https://github.com/Ritik0835) | [LinkedIn](www.linkedin.com/in/ritik-sharma-zzz0835)
