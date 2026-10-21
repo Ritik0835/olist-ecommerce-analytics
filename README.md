@@ -2,7 +2,7 @@
 
 End-to-end analytics on 99k real marketplace orders: PostgreSQL for cleaning, modelling and analysis, Power BI for a 4-page dashboard, and written business recommendations.
 
-**Headline findings:** late deliveries cut the average review score from 4.29 to 2.27, and 97% of customers never order a second time.
+**Headline findings:** late deliveries are associated with a drop in average review score from 4.29 to 2.27, and 97% of customers placed only one order in the observed window.
 
 ## Business Problem
 
@@ -48,7 +48,7 @@ Full detail and the check behind each one is in `sql/03_cleaning_checks.sql`.
 | Revenue | `05_revenue_analysis.sql` | Monthly revenue and AOV, month-over-month growth with `LAG`, cumulative revenue, top categories and states |
 | Delivery | `06_delivery_analysis.sql` | Late vs on-time orders, delivery days by state, delay buckets vs review score |
 | Cohorts | `07_cohort_retention.sql` | First-order month cohorts and month 0 to 12 retention on `customer_unique_id` |
-| RFM | `08_rfm_segmentation.sql`, `10_rfm_views.sql` | Recency and Monetary with `NTILE(5)`, Frequency by rule (1, 2, 3+), six segments |
+| RFM | `08_rfm_segmentation.sql` | Recency and Monetary with `NTILE(5)`, Frequency by rule (1, 2, 3+), six segments |
 | Sellers and categories | `09_seller_category.sql` | Top sellers, seller late % and review score (30+ orders), category revenue vs review vs late % |
 
 ## Key Insights
@@ -96,7 +96,7 @@ The full report is in [`powerbi/olist-ecommerce-analytics.pbix`](powerbi/olist-e
 ```
 olist-ecommerce-analytics/
   data/        raw Olist CSVs (download from Kaggle)
-  sql/         01_schema ... 10_rfm_views
+  sql/         01_schema ... 09_seller_category
   exports/     CSVs loaded by Power BI (fact, dimensions, cohort, RFM summary)
   powerbi/     .pbix report and PDF export
   docs/        insights.md and images
@@ -117,7 +117,7 @@ olist-ecommerce-analytics/
    psql -d olist -f sql/03_cleaning_checks.sql
    psql -d olist -f sql/04_star_schema_views.sql
    ```
-4. Run the analysis scripts `05` to `09` in order, then `10_rfm_views.sql` for the RFM views.
+4. Run the analysis scripts `05` to `09` in order (`08` also creates the RFM views).
 5. Open `powerbi/olist-ecommerce-analytics.pbix` in Power BI Desktop (Windows). The report reads the CSV files in `exports/`; if Power BI cannot find them, update the paths under **Transform data > Data source settings**.
 
 ## Author

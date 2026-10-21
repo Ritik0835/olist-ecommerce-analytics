@@ -4,8 +4,8 @@
 -- Q1. CUSTOMER COHORTS
 -- Question: How many unique customers belong to each first-purchase month?
 -- Approach: Find each customer's first delivered-order month using customer_unique_id.
--- Findings: Cohort sizes vary substantially
--- October 2016 had 262 customers, while September and December 2016 each had only 1 customer.
+-- Findings: First-time customers grow from 717 in Jan 2017 to 7,060 in Nov 2017 (the largest cohort) and then stay between about 5,900 and 6,800 per month through Aug 2018.
+-- Sep 2016 and Dec 2016 have 1 customer each and Oct 2016 has 262, so the 2016 cohorts are too small to interpret and are excluded from the dashboard.
 
 WITH delivered AS (
     SELECT DISTINCT
@@ -35,8 +35,8 @@ ORDER BY cohort_month;
 -- Q2. MONTHLY COHORT RETENTION
 -- Question: What percentage of each cohort returns in months 0 through 12?
 -- Approach: Count distinct active customers by cohort and month number, then divide by cohort size.
--- Findings: October 2016 retention was 100% in month 0,
--- 0% in months 1-5; month 6 was 0.38%. 
+-- Findings: Retention is very low and flat. Across the Jan 2017 to Aug 2018 cohorts, weighted month-1 retention is 0.48%, falling to 0.26% in month 3, 0.23% in month 6 and 0.17% in month 12.
+-- No cohort exceeds 0.72% in any month (best: the Oct 2017 cohort in month 1). Month 0 is 100% by definition. Customers rarely come back, whichever month they joined.
 
 WITH delivered AS (
     SELECT DISTINCT
