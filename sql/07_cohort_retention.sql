@@ -38,6 +38,7 @@ ORDER BY cohort_month;
 -- Findings: Retention is very low and flat. Across the Jan 2017 to Aug 2018 cohorts, weighted month-1 retention is 0.48%, falling to 0.26% in month 3, 0.23% in month 6 and 0.17% in month 12.
 -- No cohort exceeds 0.72% in any month (best: the Oct 2017 cohort in month 1). Month 0 is 100% by definition. Customers rarely come back, whichever month they joined.
 
+CREATE OR REPLACE VIEW cohort_retention AS
 WITH delivered AS (
     SELECT DISTINCT
         c.customer_unique_id,
@@ -104,5 +105,8 @@ SELECT
 FROM cohort_periods cp
 LEFT JOIN activity a
     ON a.cohort_month = cp.cohort_month
-   AND a.month_number = cp.month_number
-ORDER BY cp.cohort_month, cp.month_number;
+   AND a.month_number = cp.month_number;
+
+SELECT *
+FROM cohort_retention
+ORDER BY cohort_month, month_number;
