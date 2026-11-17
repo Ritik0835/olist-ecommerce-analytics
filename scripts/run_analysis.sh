@@ -22,7 +22,8 @@ for file in \
     06_delivery_analysis.sql \
     07_cohort_retention.sql \
     08_rfm_segmentation.sql \
-    09_seller_category.sql; do
+    09_seller_category.sql \
+    11_assertions.sql; do
     echo "===== sql/$file ====="
     psql -X -v ON_ERROR_STOP=1 -d "$DB" -f "sql/$file"
 done
