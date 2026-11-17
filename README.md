@@ -2,6 +2,10 @@
 
 End-to-end analytics on 99k real marketplace orders: PostgreSQL for cleaning, modelling and analysis, Power BI for a 4-page dashboard, and written business recommendations.
 
+[![tests](https://github.com/Ritik0835/olist-ecommerce-analytics/actions/workflows/tests.yml/badge.svg)](https://github.com/Ritik0835/olist-ecommerce-analytics/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.12-blue)
+
 **Headline findings:** late deliveries are associated with a drop in average review score from 4.29 to 2.27, and 97% of customers placed only one order in the observed window.
 
 ## Business Problem
@@ -50,6 +54,8 @@ Full detail and the check behind each one is in `sql/03_cleaning_checks.sql`.
 | Cohorts | `07_cohort_retention.sql` | First-order month cohorts and month 0 to 12 retention on `customer_unique_id` |
 | RFM | `08_rfm_segmentation.sql` | Recency and Monetary with `NTILE(5)`, Frequency by rule (1, 2, 3+), six segments |
 | Sellers and categories | `09_seller_category.sql` | Top sellers, seller late % and review score (30+ orders), category revenue vs review vs late % |
+| Assertions | `11_assertions.sql` | Fails if headline counts, revenue, RFM totals or cohort rows drift |
+| Exports | `scripts/export_powerbi.sh` | Rebuilds the views and rewrites the seven Power BI CSVs |
 
 ## Key Insights
 
@@ -83,6 +89,15 @@ The full report is in [`powerbi/olist-ecommerce-analytics.pbix`](powerbi/olist-e
 
 ![Customer Segments](docs/images/04_customer_segments.png)
 
+### Page guide
+
+| Page | Question it answers | Main visuals |
+|---|---|---|
+| Executive Overview | How is revenue moving and where is it concentrated? | Monthly revenue and AOV, cumulative revenue, top categories, top states |
+| Delivery and Seller Performance | Where does service break down? | Late vs on-time review score, delivery days by state, seller late % |
+| Customer Retention | Do customers come back? | Cohort sizes and month-1 to month-12 retention |
+| Customer Segments (RFM) | Who are the valuable customers? | Segment counts, revenue share and average spend |
+
 ## Recommendations
 
 - Escalate orders that are more than 3 days late (proactive message, quick refund or reship path) and review how estimated dates are set in slow regions.
@@ -95,30 +110,74 @@ The full report is in [`powerbi/olist-ecommerce-analytics.pbix`](powerbi/olist-e
 
 ```
 olist-ecommerce-analytics/
-  data/        raw Olist CSVs (download from Kaggle)
-  sql/         01_schema ... 09_seller_category
-  exports/     CSVs loaded by Power BI (fact, dimensions, cohort, RFM summary)
+  data/        raw Olist CSVs (download from Kaggle; gitignored)
+  sql/         01_schema ... 11_assertions
+  scripts/     load, analysis and Power BI export entry points
+  exports/     CSVs loaded by Power BI (deterministic row order)
   powerbi/     .pbix report and PDF export
-  docs/        insights.md and images
+  docs/        insights, limitations, images and query outputs
+  tests/       stdlib validation of the committed exports
+  .github/     CI that runs the export tests
   README.md
+```
+
+```mermaid
+flowchart LR
+    A[Kaggle CSVs<br/>data/] --> B[scripts/load.sh]
+    B --> C[(PostgreSQL<br/>raw tables)]
+    C --> D[star-schema views<br/>04, 07, 08]
+    D --> E[analysis queries<br/>05, 06, 09]
+    D --> F[assertions<br/>11]
+    D --> G[exports/*.csv]
+    G --> H[Power BI report]
+    E --> I[insights and recommendations]
 ```
 
 ## How to Run
 
 1. Download the Olist dataset from Kaggle and place the 9 CSV files in `data/`.
-2. Create the database and load the data, from the repository root:
+2. Build the database with the loader. It creates the database if needed and
+   refuses to overwrite a populated one:
    ```bash
-   createdb olist
-   psql -d olist -f sql/01_schema.sql
-   psql -d olist -f sql/02_load.sql
+   bash scripts/load.sh          # first run
+   bash scripts/load.sh --reset  # rebuild from the raw CSVs
    ```
-3. Run the checks and build the star schema:
+   Missing data files, SQL errors and empty databases fail with a clear
+   message.
+3. Re-run every analysis and the assertions:
    ```bash
-   psql -d olist -f sql/03_cleaning_checks.sql
-   psql -d olist -f sql/04_star_schema_views.sql
+   bash scripts/run_analysis.sh > analysis_output.txt
    ```
-4. Run the analysis scripts `05` to `09` in order (`08` also creates the RFM views).
-5. Open `powerbi/olist-ecommerce-analytics.pbix` in Power BI Desktop (Windows). The report reads the CSV files in `exports/`; if Power BI cannot find them, update the paths under **Transform data > Data source settings**.
+   The final `11_assertions.sql` block fails if orders, delivered orders, fact
+   rows, revenue, RFM totals or cohort rows drift from the documented values.
+4. Regenerate the Power BI exports:
+   ```bash
+   bash scripts/export_powerbi.sh
+   ```
+   The script rebuilds the cohort and RFM views, then rewrites all seven CSVs
+   in `exports/`. Ordering is explicit, so a repeat run is byte-identical.
+5. Open `powerbi/olist-ecommerce-analytics.pbix` in Power BI Desktop (Windows).
+   The report reads the CSV files in `exports/`; if Power BI cannot find them,
+   update the paths under **Transform data > Data source settings**.
+
+### Tests and CI
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The 9 tests need no database. They check export row counts, primary keys,
+revenue reconciliation, referential coverage, the eight missing delay
+measures, cohort completeness and the RFM totals. GitHub Actions runs the same
+suite on every push to `main`.
+
+## Limitations
+
+These are associations in observational data, not causal effects. Revenue is
+product price for delivered orders only (freight and payments excluded), 97%
+of customers ordered once, and the dashboard PDF is a snapshot because Power BI
+cannot be rebuilt on Linux. The full list, including review and seller caveats,
+is in [`docs/limitations.md`](docs/limitations.md).
 
 ## Author
 
